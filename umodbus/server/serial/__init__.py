@@ -65,9 +65,14 @@ class AbstractSerialServer(object):
 
         while not self._shutdown_request:
             try:
-                self.serve_once()
+                if not(self.serve_once()):
+                    # Rely on the Serial.timeout to prevent
+                    # the process from spinning wildly.
+                    print(".")      # FIXME: Remove debug dot
+                    continue
+                print("X")          # FIXME: Remove debug dot
             except (CRCError, struct.error) as e:
-                log.error('Can\'t handle request: {0}'.format(e))
+                log.error('Can\'t handle request1: {0}'.format(e))
             except SerialTimeoutException:
                 pass
 

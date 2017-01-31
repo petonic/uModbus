@@ -9,14 +9,14 @@ from umodbus.client.serial import rtu
 
 def get_serial_port():
     """ Return serial.Serial instance, ready to use for RS485."""
-    port = Serial(port='/dev/ttyS1', baudrate=9600, parity=PARITY_NONE,
+    port = Serial(port='/dev/rs485', baudrate=115200, parity=PARITY_NONE,
                   stopbits=1, bytesize=8, timeout=1)
 
     fh = port.fileno()
 
     # A struct with configuration for serial port.
-    serial_rs485 = struct.pack('hhhhhhhh', 1, 0, 0, 0, 0, 0, 0, 0)
-    fcntl.ioctl(fh, 0x542F, serial_rs485)
+    # serial_rs485 = struct.pack('hhhhhhhh', 1, 0, 0, 0, 0, 0, 0, 0)
+    # fcntl.ioctl(fh, 0x542F, serial_rs485)
 
     return port
 

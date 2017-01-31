@@ -42,6 +42,7 @@ class RTUServer(AbstractSerialServer):
 
         # See docstring of get_char_size() for meaning of constants below.
         serial_port.inter_byte_timeout = 1.5 * char_size
+
         serial_port.timeout = 3.5 * char_size
         self._serial_port = serial_port
 
@@ -49,10 +50,13 @@ class RTUServer(AbstractSerialServer):
         """ Listen and handle 1 request. """
         # 256 is the maximum size of a Modbus RTU frame.
         request_adu = self.serial_port.read(256)
+        if len(request_adu) == 0:
+            return False;
         log.debug('<-- {0}'.format(hexlify(request_adu)))
 
         response_adu = self.process(request_adu)
         self.respond(response_adu)
+        return True;
 
     def process(self, request_adu):
         """ Process request ADU and return response.
